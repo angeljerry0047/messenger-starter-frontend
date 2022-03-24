@@ -11,21 +11,21 @@ async function seed() {
     username: "thomas",
     email: "thomas@email.com",
     password: "123456",
-    photoUrl:
-      "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914467/messenger/thomas_kwzerk.png",
+    photoUrl: "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914467/messenger/thomas_kwzerk.png",
   });
 
   const santiago = await User.create({
     username: "santiago",
     email: "santiago@email.com",
     password: "123456",
-    photoUrl:
-      "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914466/messenger/775db5e79c5294846949f1f55059b53317f51e30_s3back.png",
+    photoUrl: "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914466/messenger/775db5e79c5294846949f1f55059b53317f51e30_s3back.png",
   });
 
   const santaigoConvo = await Conversation.create({
     user1Id: thomas.id,
     user2Id: santiago.id,
+    user1ReadTime: Date.now(),
+    user2ReadTime: Date.now(),
   });
 
   await Message.create({
@@ -48,12 +48,13 @@ async function seed() {
     username: "chiumbo",
     email: "chiumbo@email.com",
     password: "123456",
-    photoUrl:
-      "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914468/messenger/8bc2e13b8ab74765fd57f0880f318eed1c3fb001_fownwt.png",
+    photoUrl: "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914468/messenger/8bc2e13b8ab74765fd57f0880f318eed1c3fb001_fownwt.png",
   });
   const chiumboConvo = await Conversation.create({
     user1Id: chiumbo.id,
     user2Id: thomas.id,
+    user1ReadTime: Date.now(),
+    user2ReadTime: Date.now(),
   });
   await Message.create({
     conversationId: chiumboConvo.id,
@@ -65,12 +66,13 @@ async function seed() {
     username: "hualing",
     email: "hualing@email.com",
     password: "123456",
-    photoUrl:
-      "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914466/messenger/6c4faa7d65bc24221c3d369a8889928158daede4_vk5tyg.png",
+    photoUrl: "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914466/messenger/6c4faa7d65bc24221c3d369a8889928158daede4_vk5tyg.png",
   });
   const hualingConvo = await Conversation.create({
     user2Id: hualing.id,
     user1Id: thomas.id,
+    user1ReadTime: Date.now(),
+    user2ReadTime: Date.now(),
   });
 
   for (let i = 0; i < 11; i++) {

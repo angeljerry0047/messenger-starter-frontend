@@ -20,8 +20,6 @@ You have full access to `git` CLI within Gitpod terminal, and Visual Studio Code
 
 ## Local Setup
 
-**Note:** these setup steps are not necessary when running the code on GitPod. They are only necessary when running the project on your local machine.
-
 Create the PostgreSQL database (these instructions may need to be adapted for your operating system):
 
 ```
@@ -95,4 +93,3 @@ npm run dev
 
 ![image](https://user-images.githubusercontent.com/8978815/136117299-b45a61ce-0b5c-495f-b572-05ad80b78a28.png)
 ![image](https://user-images.githubusercontent.com/8978815/136119935-4b941f87-0015-48c5-b93e-5bd0bcbbd64b.png)
-

@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography, Avatar } from '@material-ui/core';
+import { ThreeDotLoader } from '../Loader';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -29,9 +30,15 @@ const useStyles = makeStyles(() => ({
     letterSpacing: -0.2,
     padding: 8,
   },
+  threeDotWrapper: {
+    padding: 15,
+    '& > .dot-flashing': {
+      margin: '0 auto',
+    },
+  },
 }));
 
-const OtherUserBubble = ({ text, time, otherUser }) => {
+const OtherUserBubble = ({ text, time, otherUser, isTyping }) => {
   const classes = useStyles();
 
   return (
@@ -46,7 +53,13 @@ const OtherUserBubble = ({ text, time, otherUser }) => {
           {otherUser.username} {time}
         </Typography>
         <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+          {isTyping ? (
+            <Box className={classes.threeDotWrapper}>
+              <ThreeDotLoader />
+            </Box>
+          ) : (
+            <Typography className={classes.text}>{text}</Typography>
+          )}
         </Box>
       </Box>
     </Box>

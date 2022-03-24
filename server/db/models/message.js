@@ -10,9 +10,6 @@ const Message = db.define("message", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  attachments: {
-    type: Sequelize.ARRAY(Sequelize.TEXT),
-  },
 });
 
 module.exports = Message;

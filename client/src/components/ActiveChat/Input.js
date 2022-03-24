@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
-import { FormControl, FilledInput } from '@material-ui/core';
+import React, { useState, useContext, useEffect } from 'react';
+import {
+  FormControl,
+  FilledInput,
+  InputAdornment,
+  IconButton,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { SocketContext } from '../../context/socket';
+import FileIcon from '../../assets/images/fileIcon';
+import SmileIcon from '../../assets/images/smileIcon';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,11 +25,20 @@ const useStyles = makeStyles(() => ({
 
 const Input = ({ otherUser, conversationId, user, postMessage }) => {
   const classes = useStyles();
+  const socket = useContext(SocketContext);
   const [text, setText] = useState('');
 
   const handleChange = (event) => {
     setText(event.target.value);
   };
+
+  useEffect(() => {
+    if (text.length > 1) return;
+    socket.emit('typing', {
+      user,
+      typing: text.length !== 0,
+    });
+  }, [socket, user, text]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,6 +65,16 @@ const Input = ({ otherUser, conversationId, user, postMessage }) => {
           value={text}
           name="text"
           onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton>
+                <SmileIcon />
+              </IconButton>
+              <IconButton>
+                <FileIcon />
+              </IconButton>
+            </InputAdornment>
+          }
         />
       </FormControl>
     </form>

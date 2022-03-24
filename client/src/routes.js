@@ -1,90 +1,30 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Route, Switch, withRouter } from "react-router-dom";
+import React, { useEffect, useState, useContext } from 'react';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
-import Signup from "./Signup.js";
-import Login from "./Login.js";
-import { SnackbarError, Home } from "./components";
-import { SocketContext, socket } from "./context/socket";
+import { SnackbarError, Home, Auth, TopBarLoader } from './components';
+import { SocketContext, socket } from './context/socket';
+import { AuthContext } from './context/auth';
 
 const Routes = (props) => {
-  const [user, setUser] = useState({
-    isFetching: true,
-  });
+  const { user } = useContext(AuthContext);
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [snackBarOpen, setSnackBarOpen] = useState(false);
-
-  const login = async (credentials) => {
-    try {
-      const { data } = await axios.post("/auth/login", credentials);
-      await localStorage.setItem("messenger-token", data.token);
-      setUser(data);
-      socket.emit("go-online", data.id);
-    } catch (error) {
-      console.error(error);
-      setUser({ error: error.response.data.error || "Server Error" });
-    }
-  };
-
-  const register = async (credentials) => {
-    try {
-      const { data } = await axios.post("/auth/register", credentials);
-      await localStorage.setItem("messenger-token", data.token);
-      setUser(data);
-      socket.emit("go-online", data.id);
-    } catch (error) {
-      console.error(error);
-      setUser({ error: error.response.data.error || "Server Error" });
-    }
-  };
-
-  const logout = async (id) => {
-    try {
-      await axios.delete("/auth/logout");
-      await localStorage.removeItem("messenger-token");
-      setUser({});
-      socket.emit("logout", id);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // Lifecycle
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      setUser((prev) => ({ ...prev, isFetching: true }));
-      try {
-        const { data } = await axios.get("/auth/user");
-        setUser(data);
-        if (data.id) {
-          socket.emit("go-online", data.id);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setUser((prev) => ({ ...prev, isFetching: false }));
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     if (user?.error) {
       // check to make sure error is what we expect, in case we get an unexpected server error object
-      if (typeof user.error === "string") {
+      if (typeof user.error === 'string') {
         setErrorMessage(user.error);
       } else {
-        setErrorMessage("Internal Server Error. Please try again");
+        setErrorMessage('Internal Server Error. Please try again');
       }
       setSnackBarOpen(true);
     }
   }, [user?.error]);
 
   if (user?.isFetching) {
-    return <div>Loading...</div>;
+    return <TopBarLoader />;
   }
 
   return (
@@ -97,29 +37,14 @@ const Routes = (props) => {
         />
       )}
       <Switch>
-        <Route
-          path="/login"
-          render={() => <Login user={user} login={login} />}
-        />
-        <Route
-          path="/register"
-          render={() => <Signup user={user} register={register} />}
-        />
+        <Route path="/login" render={() => <Auth type={'login'} />} />
+        <Route path="/register" render={() => <Auth type={'signup'} />} />
         <Route
           exact
           path="/"
-          render={(props) =>
-            user?.id ? (
-              <Home user={user} logout={logout} />
-            ) : (
-              <Signup user={user} register={register} />
-            )
-          }
+          render={(props) => (user?.id ? <Home /> : <Auth type={'signup'} />)}
         />
-        <Route
-          path="/home"
-          render={() => <Home user={user} logout={logout} />}
-        />
+        <Route path="/home" render={() => <Home />} />
       </Switch>
     </SocketContext.Provider>
   );
